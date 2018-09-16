@@ -36,6 +36,7 @@ set(config_module_list
 	#
 	modules/sensors
 	platforms/posix/drivers/df_mpu9250_wrapper
+	platforms/posix/drivers/df_ms5611_wrapper
 
 	#
 	# System commands
@@ -79,4 +80,5 @@ set(config_module_list
 
 set(config_df_driver_list
 	mpu9250
+	ms5611
 	)
