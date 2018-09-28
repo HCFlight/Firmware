@@ -19,7 +19,7 @@ do
 	if [[ $((i+1)) == "$#" ]]; then
 		break
 	fi
-	# echo "Pushing $arg to $last"
+	 echo "Pushing $arg to $last"
 	adb push $arg $last
 	((i+=1))
 done
