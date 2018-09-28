@@ -70,8 +70,7 @@ set(config_module_list
 	drivers/gps
 	drivers/spektrum_rc
 	drivers/qshell/qurt
-	drivers/snapdragon_pwm_out
-
+	drivers/irmck099
 	#
 	# sources for muorb over fastrpc
 	#
