@@ -48,15 +48,28 @@ else()
 			m
 			modules__muorb__adsp
 		)
-
+if(("${BOARD}" STREQUAL "hc"))
+add_custom_target(upload
+COMMAND
+	${PX4_SOURCE_DIR}/Tools/adb_upload.sh
+		${CMAKE_CURRENT_BINARY_DIR}/libpx4.so ${CMAKE_CURRENT_BINARY_DIR}/libpx4muorb_skel.so ${PX4_SOURCE_DIR}/posix-configs/hc/px4.config
+		/usr/share/data/adsp
+DEPENDS px4 px4muorb_skel
+COMMENT "uploading px4"
+USES_TERMINAL
+)
+	else()
 	add_custom_target(upload
-		COMMAND
-			${PX4_SOURCE_DIR}/Tools/adb_upload.sh
-				${CMAKE_CURRENT_BINARY_DIR}/libpx4.so ${CMAKE_CURRENT_BINARY_DIR}/libpx4muorb_skel.so ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/px4.config
-				/usr/share/data/adsp
-		DEPENDS px4 px4muorb_skel
-		COMMENT "uploading px4"
-		USES_TERMINAL
-	)
+	COMMAND
+		${PX4_SOURCE_DIR}/Tools/adb_upload.sh
+			${CMAKE_CURRENT_BINARY_DIR}/libpx4.so ${CMAKE_CURRENT_BINARY_DIR}/libpx4muorb_skel.so ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/px4.config
+			/usr/share/data/adsp
+	DEPENDS px4 px4muorb_skel
+	COMMENT "uploading px4"
+	USES_TERMINAL
+)
+endif()
+
+
 
 endif()

@@ -32,13 +32,23 @@ if (("${BOARD}" STREQUAL "eagle") OR ("${BOARD}" STREQUAL "excelsior") OR ("${BO
 				pthread m rt
 			-Wl,--end-group
 		)
+if(("${BOARD}" STREQUAL "hc"))
+add_custom_target(upload
+COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/hc/mainapp.config /home/linaro
+DEPENDS px4
+COMMENT "uploading px4"
+USES_TERMINAL
+)
+else()	
+add_custom_target(upload
+COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/mainapp.config /home/linaro
+DEPENDS px4
+COMMENT "uploading px4"
+USES_TERMINAL
+)
+endif()
 
-	add_custom_target(upload
-		COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/mainapp.config /home/linaro
-		DEPENDS px4
-		COMMENT "uploading px4"
-		USES_TERMINAL
-		)
+
 
 else()
 	px4_add_executable(px4
