@@ -71,6 +71,7 @@ set(config_module_list
 	drivers/spektrum_rc
 	drivers/qshell/qurt
 	drivers/irmck099
+	drivers/stm32f401
 	#
 	# sources for muorb over fastrpc
 	#
