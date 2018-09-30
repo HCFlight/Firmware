@@ -28,8 +28,8 @@
 	branch = master
 [submodule "src/lib/DriverFramework"]
 	path = src/lib/DriverFramework
-	url = https://github.com/PX4/DriverFramework.git
-	branch = master
+	url = git@git.zerozero.cn:Open-HC1/DriverFramework.git
+	branch =hc1master
 [submodule "src/lib/ecl"]
 	path = src/lib/ecl
 	url = https://github.com/PX4/ecl.git
