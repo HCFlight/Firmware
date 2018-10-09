@@ -32,21 +32,28 @@ if (("${BOARD}" STREQUAL "eagle") OR ("${BOARD}" STREQUAL "excelsior") OR ("${BO
 				pthread m rt
 			-Wl,--end-group
 		)
-if(("${BOARD}" STREQUAL "hc"))
-add_custom_target(upload
-COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/hc/mainapp.config /home/linaro
-DEPENDS px4
-COMMENT "uploading px4"
-USES_TERMINAL
-)
-else()	
-add_custom_target(upload
-COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/mainapp.config /home/linaro
-DEPENDS px4
-COMMENT "uploading px4"
-USES_TERMINAL
-)
-endif()
+        if(("${BOARD}" STREQUAL "hc"))
+            add_custom_target(upload
+            COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/hc/mainapp.config /home/linaro
+            DEPENDS px4
+            COMMENT "uploading px4"
+            USES_TERMINAL
+          )
+
+            execute_process(COMMAND echo "Enable HC1 motor...")
+            execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc1_config/adb_exe_motor_enable.sh)
+            execute_process(COMMAND echo "HC1 mixer upload...")
+            execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc1_config/motor_mixer_upload.sh)
+            execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc_motor_enable/adb_exe_motor_enable.sh)
+
+          else()	
+          add_custom_target(upload
+          COMMAND ${PX4_SOURCE_DIR}/Tools/adb_upload.sh $<TARGET_FILE:px4> ${PX4_SOURCE_DIR}/posix-configs/eagle/flight/mainapp.config /home/linaro
+          DEPENDS px4
+          COMMENT "uploading px4"
+          USES_TERMINAL
+          )
+         endif()
 
 
 
