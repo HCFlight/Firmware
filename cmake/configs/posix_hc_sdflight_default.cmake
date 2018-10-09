@@ -28,7 +28,7 @@ else()
 endif()
 
 set(CONFIG_SHMEM "1")
-
+message("HC1_debug message")
 set(config_module_list
 	drivers/blinkm
 	drivers/linux_sbus
@@ -62,4 +62,5 @@ set(config_module_list
 	modules/simulator
 	modules/commander
 	modules/navigator
+	modules/hovercamera/hc1_enable_motor
 )
