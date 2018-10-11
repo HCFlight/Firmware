@@ -847,7 +847,6 @@ void VotedSensorsUpdate::baro_poll(vehicle_air_data_s &airdata)
 	if (got_update) {
 		int best_index;
 		_baro.voter.get_best(hrt_absolute_time(), &best_index);
-		best_index = 0;
 		if (best_index >= 0) {
 			airdata = _last_airdata[best_index];
 
