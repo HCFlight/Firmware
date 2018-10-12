@@ -141,7 +141,7 @@ int initialize_mixer(const char *mixer_filename)
         float deadband = 0;
 
         _mixer = new MultirotorMixer(mixer_control_callback, (uintptr_t)&_controls,
-                                     MultirotorGeometry::QUAD_X,
+                                     MultirotorGeometry::QUAD_H,
                                      roll_scale, pitch_scale, yaw_scale, deadband);
 
         if (_mixer == nullptr)
