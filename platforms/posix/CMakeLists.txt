@@ -40,11 +40,8 @@ if (("${BOARD}" STREQUAL "eagle") OR ("${BOARD}" STREQUAL "excelsior") OR ("${BO
             USES_TERMINAL
           )
 
-            execute_process(COMMAND echo "Enable HC1 motor...")
-            execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc1_config/adb_exe_motor_enable.sh)
             execute_process(COMMAND echo "HC1 mixer upload...")
             execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc1_config/motor_mixer_upload.sh)
-            execute_process(COMMAND ${PX4_SOURCE_DIR}/Tools/hc_motor_enable/adb_exe_motor_enable.sh)
 
           else()	
           add_custom_target(upload
