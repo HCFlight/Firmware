@@ -1108,7 +1108,6 @@ int Simulator::publish_flow_topic(mavlink_hil_optical_flow_t *flow_mavlink)
 	param_get(param_find("SENS_FLOW_MINHGT"), &flow_min_hgt);
 	float flow_max_hgt;
 	param_get(param_find("SENS_FLOW_MAXHGT"), &flow_max_hgt);
-
 	flow.max_flow_rate = flow_rate_max;
 	flow.min_ground_distance = flow_min_hgt;
 	flow.max_ground_distance = flow_max_hgt;

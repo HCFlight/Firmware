@@ -3061,7 +3061,6 @@ Commander::set_main_state_rc(const vehicle_status_s &status_local, bool *changed
 			return res;
 		}
 	}
-
 	/* we know something has changed - check if we are in mode slot operation */
 	if (sp_man.mode_slot != manual_control_setpoint_s::MODE_SLOT_NONE) {
 
@@ -3071,10 +3070,13 @@ Commander::set_main_state_rc(const vehicle_status_s &status_local, bool *changed
 		}
 
 		int new_mode = _flight_mode_slots[sp_man.mode_slot];
+        PX4_WARN("CYF_MODE_DEBUG, span.mode_slot:%d, new mode:%d",sp_man.mode_slot, new_mode);
 
 		if (new_mode < 0) {
 			/* slot is unused */
 			res = TRANSITION_NOT_CHANGED;
+            PX4_WARN("CYF_MODE_DEBUG, new mode did not change ");
+
 
 		} else {
 			res = main_state_transition(status_local, new_mode, status_flags, &internal_state);
@@ -3084,8 +3086,10 @@ Commander::set_main_state_rc(const vehicle_status_s &status_local, bool *changed
 
 			/* enable the use of break */
 			/* fallback strategies, give the user the closest mode to what he wanted */
+            PX4_WARN("CYF_MODE_DEBUG, res:%d, maxcount:%d", res, maxcount);
 			while (res == TRANSITION_DENIED && maxcount > 0) {
 
+            PX4_WARN("CYF_MODE_DEBUG, reject while");
 				maxcount--;
 
 				if (new_mode == commander_state_s::MAIN_STATE_AUTO_MISSION) {
@@ -3164,7 +3168,9 @@ Commander::set_main_state_rc(const vehicle_status_s &status_local, bool *changed
 
 					/* fall back to altitude control */
 					new_mode = commander_state_s::MAIN_STATE_ALTCTL;
-					print_reject_mode("POSITION CONTROL");
+					print_reject_mode("POSITION CONTROL");  
+					PX4_WARN("CYF_MODE_DEBUG, postion reject");
+
 					res = main_state_transition(status_local, new_mode, status_flags, &internal_state);
 
 					if (res != TRANSITION_DENIED) {
@@ -3368,6 +3374,8 @@ Commander::check_posvel_validity(const bool data_valid, const float data_accurac
 	const bool was_valid = *valid_state;
 	bool valid = was_valid;
 
+//	PX4_INFO("CYF_CHECK start was_valid:%d, valid:%d", was_valid, valid);
+
 	// constrain probation times
 	if (land_detector.landed) {
 		*probation_time_us = POSVEL_PROBATION_MIN;
@@ -3378,8 +3386,13 @@ Commander::check_posvel_validity(const bool data_valid, const float data_accurac
 
 	const bool level_check_pass = data_valid && !data_stale && (data_accuracy < req_accuracy);
 
+
+	// PX4_INFO("CYF_CHECK_LEVEL data_valid:%d, data_stable:%d, req_acc:%f , data_acc:%f",data_valid,data_stale,double(req_accuracy), double(data_accuracy));
+
 	// Check accuracy with hysteresis in both test level and time
 	if (level_check_pass) {
+		
+	    // PX4_INFO("CYF_CHECK level check pass was_valid:%d, valid:%d", was_valid, valid);
 		if (was_valid) {
 			// still valid, continue to decrease probation time
 			const int64_t probation_time_new = *probation_time_us - hrt_elapsed_time(last_fail_time_us);
@@ -3393,6 +3406,7 @@ Commander::check_posvel_validity(const bool data_valid, const float data_accurac
 		}
 
 	} else {
+	    // PX4_INFO("CYF_CHECK level check not pass was_valid:%d, valid:%d", was_valid, valid);
 		// level check failed
 		if (was_valid) {
 			// FAILURE! no longer valid
@@ -3406,6 +3420,7 @@ Commander::check_posvel_validity(const bool data_valid, const float data_accurac
 
 		*last_fail_time_us = hrt_absolute_time();
 	}
+	    // PX4_INFO("CYF_CHECK level check finish ,was_valid:%d, valid:%d", was_valid, valid);
 
 	if (was_valid != valid) {
 		*validity_changed = true;

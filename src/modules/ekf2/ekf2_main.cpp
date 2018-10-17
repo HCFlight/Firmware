@@ -197,6 +197,10 @@ private:
 
 	parameters *_params;	///< pointer to ekf parameter struct (located in _ekf class instance)
 
+	float _sensor_min_range = 0.0;
+    float _sensor_max_range = 0.0;
+    float _sensor_max_flow_rate = 0.0;
+
 	DEFINE_PARAMETERS(
 		(ParamExtInt<px4::params::EKF2_MIN_OBS_DT>)
 		_obs_dt_min_ms,	///< Maximmum time delay of any sensor used to increse buffer length to handle large timing jitter (mSec)
@@ -517,6 +521,34 @@ Ekf2::Ekf2():
 
 	// initialise parameter cache
 	updateParams();
+    
+		/* get operational limits of the sensor */
+	param_t hmin = param_find("SENS_FLOW_MINHGT");
+
+	if (hmin != PARAM_INVALID) {
+		float val = 0.7;
+		param_get(hmin, &val);
+
+		_sensor_min_range = val;
+	}
+
+	param_t hmax = param_find("SENS_FLOW_MAXHGT");
+
+	if (hmax != PARAM_INVALID) {
+		float val = 3.0;
+		param_get(hmax, &val);
+
+		_sensor_max_range = val;
+	}
+
+	param_t ratemax = param_find("SENS_FLOW_MAXR");
+
+	if (ratemax != PARAM_INVALID) {
+		float val = 2.5;
+		param_get(ratemax, &val);
+
+		_sensor_max_flow_rate = val;
+	}
 }
 
 Ekf2::~Ekf2()
@@ -901,6 +933,15 @@ void Ekf2::run()
 					_ekf.setOpticalFlowData(optical_flow.timestamp, &flow);
 				}
 
+				optical_flow.max_flow_rate = _sensor_max_flow_rate;
+				optical_flow.min_ground_distance = _sensor_min_range;
+				optical_flow.max_ground_distance = _sensor_max_range;
+
+				//PX4_INFO("CYF_OPT set flow max rate:%f, mid:%f, mxd:%f",
+				// double(optical_flow.max_flow_rate), 
+				// double( optical_flow.min_ground_distance),
+				// double(optical_flow.max_ground_distance));
+
 				// Save sensor limits reported by the optical flow sensor
 				_ekf.set_optical_flow_limits(optical_flow.max_flow_rate, optical_flow.min_ground_distance,
 							     optical_flow.max_ground_distance);
@@ -909,11 +950,12 @@ void Ekf2::run()
 						(int64_t)ekf2_timestamps.timestamp / 100);
 			}
 		}
-
+    //    PX4_INFO("CYF_RANG _range_finder_sub_index: %d",_range_finder_sub_index);
 		if (_range_finder_sub_index >= 0) {
 			bool range_finder_updated = false;
 
 			orb_check(_range_finder_subs[_range_finder_sub_index], &range_finder_updated);
+     //       PX4_INFO("CYF_RANG range_finder_updated: %d",range_finder_updated);
 
 			if (range_finder_updated) {
 				distance_sensor_s range_finder;
@@ -1452,16 +1494,21 @@ void Ekf2::run()
 int Ekf2::getRangeSubIndex(const int *subs)
 {
 	for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+       
 		bool updated = false;
 		orb_check(subs[i], &updated);
 
+     //   PX4_INFO("CYF_RANG updated: %d",updated);
 		if (updated) {
 			distance_sensor_s report;
 			orb_copy(ORB_ID(distance_sensor), subs[i], &report);
 
 			// only use the first instace which has the correct orientation
+//			 PX4_INFO("CYF_RANG report.orientation: %d",report.orientation);
 			if (report.orientation == distance_sensor_s::ROTATION_DOWNWARD_FACING) {
 				PX4_INFO("Found range finder with instance %d", i);
+				// PX4_INFO("CYF_RANG reture :%d",i);
+				// PX4_INFO("Found range finder with instance %d", i);
 				return i;
 			}
 		}

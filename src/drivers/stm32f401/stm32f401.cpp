@@ -43,6 +43,8 @@ namespace stm32f401{
            // return;
         }
 
+        int _orb_class_instance = -1;
+
         // //len freq setup test F401 driver
         // int ledsetup = f401_power_led_set_freq(10);
         // PX4_INFO("stm32f401_: led setup result: %d", ledsetup);
@@ -51,7 +53,7 @@ namespace stm32f401{
         //     return;
         // }
 
-        usleep(1000 * 1000 * 1);
+        usleep(1000 * 10);
 
         int jumpToAppResult = f401_jump_to_app();
         PX4_INFO("stm32f401_: jump to app result: %d", jumpToAppResult);
@@ -60,7 +62,7 @@ namespace stm32f401{
             return;
         }
 
-        usleep(1000 * 1000 * 1);
+        usleep(1000 * 10);
 
         int pulseSetupResult = f401_sonar_set_pulse(0, 10);
         PX4_INFO("stm32f401_: sonar pulse setup result: %d", pulseSetupResult);
@@ -114,11 +116,11 @@ namespace stm32f401{
     uint32_t framenum;
 }
             */
-              usleep(1000 * 50);
+        //      usleep(1000 * 50);
 //continue;
         report.timestamp = hrt_absolute_time();
         report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_ULTRASOUND;
-        report.orientation = 8;
+        report.orientation = 25;
         report.current_distance = float(sonarHegiht)/1000;
         report.min_distance = 0.4;
         report.max_distance = 5.1;
@@ -130,21 +132,21 @@ namespace stm32f401{
         report._padding0[4] = 1;
         /* TODO: set proper ID */
         report.id = 0;
-           // PX4_INFO("sonar heilht %f",report.current_distance);
+       //    PX4_INFO("CYF_sonar height %f",report.current_distance);
             if(distance_sensor_pub != nullptr)
             {
                 orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &report);
 
             }else{
-
-                distance_sensor_pub = orb_advertise(ORB_ID(distance_sensor), &report);
+                 distance_sensor_pub = orb_advertise_multi(ORB_ID(distance_sensor), &report,&_orb_class_instance, ORB_PRIO_LOW);
+                // distance_sensor_pub = orb_advertise(ORB_ID(distance_sensor), &report);
 
                 //orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &report);
                // PX4_INFO("stm32f401_: orb_publish distance_sensor result %d",ret);
 
             }
 
-           usleep(10000);
+         //  usleep(10000);
         }
        orb_unadvertise(distance_sensor_pub);
     }
