@@ -34,13 +34,11 @@ namespace stm32f401{
     void task_main(int argc, char *argv[])
     {
 
-        PX4_INFO("stm32f401_: task main");
-
         int initResult =  f401_init("/dev/spi-10");
-        PX4_INFO("stm32f401_: init result: %d", initResult);
         if (initResult == F401_ERROR_CODE_FAIL) {
-            PX4_INFO("stm32f401_: init failed result: %d", initResult);
-           // return;
+            PX4_ERR("HC_ERROR stm32f401_: init failed result: %d", initResult);
+        } else {
+            PX4_INFO("stm32f401_: init success result: %d", initResult);
         }
 
         int _orb_class_instance = -1;
@@ -53,31 +51,34 @@ namespace stm32f401{
         //     return;
         // }
 
-        usleep(1000 * 10);
+        usleep(1000 * 100);
 
         int jumpToAppResult = f401_jump_to_app();
-        PX4_INFO("stm32f401_: jump to app result: %d", jumpToAppResult);
         if (jumpToAppResult == F401_ERROR_CODE_FAIL) {
-            PX4_INFO("stm32f401_: jump to app falied result: %d", jumpToAppResult);
+            PX4_ERR("HC_ERROR stm32f401_: jump to app falied result: %d", jumpToAppResult);
             return;
+        } else {
+            PX4_INFO("stm32f401_: jump to app success result: %d", jumpToAppResult);
         }
 
-        usleep(1000 * 10);
+        usleep(1000 * 100);
 
         int pulseSetupResult = f401_sonar_set_pulse(0, 10);
-        PX4_INFO("stm32f401_: sonar pulse setup result: %d", pulseSetupResult);
         if (pulseSetupResult == F401_ERROR_CODE_FAIL) {
-            PX4_INFO("stm32f401_: sonar pulse setup failed result: %d", pulseSetupResult);
+            PX4_ERR("HC_ERROR stm32f401_: sonar pulse setup failed result: %d", pulseSetupResult);
             return;
+        } else {
+            PX4_INFO("stm32f401_: sonar pulse setup success result: %d", pulseSetupResult);
         }
     
       
         //Start sonar and setup.
         int sonarStartResult = f401_sonar_start();
-        PX4_INFO("stm32f401_: start sonar result: %d", sonarStartResult);
         if (sonarStartResult == F401_ERROR_CODE_FAIL) {
-            PX4_INFO("stm32f401_: start sonar failed result: %d", sonarStartResult);
+            PX4_ERR("HC_ERROR stm32f401_: start sonar failed result: %d", sonarStartResult);
             return;
+        } else {
+            PX4_INFO("stm32f401_: start sonar result: %d", sonarStartResult);
         }
 
       
@@ -86,10 +87,6 @@ namespace stm32f401{
         uint32_t sonarHegiht = 0;
         struct sensor_sonar_raw_s sonarRaw; 
 
-      
-
-
-        
         while(!_task_should_exit)
         {
 
@@ -103,21 +100,6 @@ namespace stm32f401{
                  PX4_INFO("stm32f401_: sonar get height failed result: %d", getRawResult);
             } 
 
-             //PX4_INFO("stm32f401_: sonar height result: %d", sonarHegiht);
-
-            /*
-    struct sensor_sonar_raw_s {
-    uint16_t pulse_num;
-    uint16_t noise;
-    uint16_t falling_mm;
-    uint16_t dead_zone_mm;
-    uint16_t distance_mm[MAX_PEAK_NUM];
-    uint16_t peak_value[MAX_PEAK_NUM];
-    uint32_t framenum;
-}
-            */
-        //      usleep(1000 * 50);
-//continue;
         report.timestamp = hrt_absolute_time();
         report.type = distance_sensor_s::MAV_DISTANCE_SENSOR_ULTRASOUND;
         report.orientation = 25;
@@ -132,21 +114,15 @@ namespace stm32f401{
         report._padding0[4] = 1;
         /* TODO: set proper ID */
         report.id = 0;
-       //    PX4_INFO("CYF_sonar height %f",report.current_distance);
             if(distance_sensor_pub != nullptr)
             {
+                PX4_INFO("stm32f401_: publish height : %d", sonarHegiht);
                 orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &report);
 
             }else{
                  distance_sensor_pub = orb_advertise_multi(ORB_ID(distance_sensor), &report,&_orb_class_instance, ORB_PRIO_LOW);
-                // distance_sensor_pub = orb_advertise(ORB_ID(distance_sensor), &report);
-
-                //orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &report);
-               // PX4_INFO("stm32f401_: orb_publish distance_sensor result %d",ret);
-
             }
 
-         //  usleep(10000);
         }
        orb_unadvertise(distance_sensor_pub);
     }
