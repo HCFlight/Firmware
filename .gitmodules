@@ -32,8 +32,8 @@
 	branch =hc1master
 [submodule "src/lib/ecl"]
 	path = src/lib/ecl
-	url = https://github.com/PX4/ecl.git
-	branch = master
+	url = https://github.com/YuanfuC/ecl.git
+	branch = debug/optflow_not_required
 [submodule "cmake/cmake_hexagon"]
 	path = cmake/cmake_hexagon
 	url = https://github.com/ATLFlight/cmake_hexagon.git
