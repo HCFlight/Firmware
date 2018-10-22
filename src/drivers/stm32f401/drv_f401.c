@@ -49,14 +49,14 @@ int f401_init(const char *config)
 
     _fd = open(config, 0);
     if (_fd < 0) {
-        PX4_ERR("drv_f401: error: failed to open spi device path: %s", config);
+        PX4_ERR("HC_ERROR stm32f401_ drv_f401: error: failed to open spi device path: %s", config);
         return F401_ERROR_CODE_FAIL;
     }
     // Config SPI speed to 1 MHz
     struct dspal_spi_ioctl_set_bus_frequency freq;
     freq.bus_frequency_in_hz = F401_SPI10_FREQUENCY_1MHZ;
     if (ioctl(_fd, SPI_IOCTL_SET_BUS_FREQUENCY_IN_HZ, &freq) != 0) {
-      PX4_ERR("drv_f401: config spi speed failed\n");
+        PX4_ERR("HC_ERROR stm32f401_drv_f401: config spi speed failed\n");
         return F401_ERROR_CODE_FAIL;
     }
 

@@ -270,7 +270,7 @@ main_state_transition(const vehicle_status_s &status, const main_state_t new_mai
 		break;
 
 	case commander_state_s::MAIN_STATE_POSCTL:
-
+        PX4_WARN("CYF_Transition CLPV:%d, CGPV:%d,", status_flags.condition_local_position_valid,status_flags.condition_global_position_valid);
 		/* need at minimum local position estimate */
 		if (status_flags.condition_local_position_valid ||
 		    status_flags.condition_global_position_valid) {
