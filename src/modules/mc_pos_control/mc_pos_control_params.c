@@ -69,7 +69,7 @@ PARAM_DEFINE_FLOAT(MPC_THR_MIN, 0.12f);
  * @increment 0.01
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_THR_HOVER, 0.75f);
+PARAM_DEFINE_FLOAT(MPC_THR_HOVER, 0.5f);
 
 /**
  * Maximum thrust in auto thrust control
@@ -189,7 +189,7 @@ PARAM_DEFINE_FLOAT(MPC_Z_VEL_MAX_DN, 1.0f);
  * @decimal 2
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_XY_P, 0.5f);
+PARAM_DEFINE_FLOAT(MPC_XY_P, 0.95f);
 
 /**
  * Proportional gain for horizontal velocity error
@@ -199,7 +199,7 @@ PARAM_DEFINE_FLOAT(MPC_XY_P, 0.5f);
  * @decimal 2
  * @group Multicopter Position Control
  */
-PARAM_DEFINE_FLOAT(MPC_XY_VEL_P, 0.06f);
+PARAM_DEFINE_FLOAT(MPC_XY_VEL_P, 0.09f);
 
 /**
  * Integral gain for horizontal velocity error

@@ -28,7 +28,7 @@
 	branch = master
 [submodule "src/lib/DriverFramework"]
 	path = src/lib/DriverFramework
-	url = https://github.com/HCFlight/DriverFramework.git
+	url = git@git.zerozero.cn:Open-HC1/DriverFramework.git
 	branch =hc1master
 [submodule "src/lib/ecl"]
 	path = src/lib/ecl
