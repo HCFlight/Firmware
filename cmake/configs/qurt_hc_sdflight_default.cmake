@@ -70,8 +70,8 @@ set(config_module_list
 	drivers/gps
 	drivers/spektrum_rc
 	drivers/qshell/qurt
-	drivers/irmck099
-	drivers/stm32f401
+	drivers/hovercamera/irmck099
+	drivers/hovercamera/stm32f401
 	#
 	# sources for muorb over fastrpc
 	#
