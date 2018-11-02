@@ -116,7 +116,7 @@ namespace stm32f401{
         report.id = 0;
             if(distance_sensor_pub != nullptr)
             {
-                PX4_INFO("stm32f401_: publish height : %d", sonarHegiht);
+                //PX4_INFO("stm32f401_: publish height : %d", sonarHegiht);
                 orb_publish(ORB_ID(distance_sensor), distance_sensor_pub, &report);
 
             }else{

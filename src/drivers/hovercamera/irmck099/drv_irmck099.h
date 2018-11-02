@@ -18,7 +18,7 @@
 
 #include "fc_define/basic_type.h"
 
-#define IRMCK099_UART_PATH "/dev/tty-2"
+#define IRMCK099_UART_PATH "/dev/tty-4"
 
 #define IRMCK099_CFG_FIELDS \
     .irmck099_uart_path = IRMCK099_UART_PATH, \
