@@ -33,7 +33,7 @@
 [submodule "src/lib/ecl"]
 	path = src/lib/ecl
 	url = https://github.com/YuanfuC/ecl.git
-	branch = debug/optflow_not_required
+	branch = hc_master
 [submodule "cmake/cmake_hexagon"]
 	path = cmake/cmake_hexagon
 	url = https://github.com/ATLFlight/cmake_hexagon.git
